@@ -6,6 +6,7 @@
 #include "states/IngameState.hpp"
 #include "states/LoadingState.hpp"
 #include "states/MenuState.hpp"
+#include "states/MovieState.hpp"
 
 #include <core/Profiler.hpp>
 
@@ -34,6 +35,7 @@ RWGame::RWGame(Logger& log, int argc, char* argv[])
     , renderer(&log, &data) {
     bool newgame = options.count("newgame");
     bool test = options.count("test");
+    bool movies = options.count("movies");
     std::string startSave(
         options.count("load") ? options["load"].as<std::string>() : "");
     std::string benchFile(options.count("benchmark")
@@ -78,7 +80,10 @@ RWGame::RWGame(Logger& log, int argc, char* argv[])
     }
 
     StateManager::get().enter<LoadingState>(this, [=]() {
-        if (!benchFile.empty()) {
+        if (movies) {
+            StateManager::get().enter<MovieState>(this, "Logo");
+            StateManager::get().enter<MovieState>(this, "GTAtitles");
+        } else if (!benchFile.empty()) {
             StateManager::get().enter<BenchmarkState>(this, benchFile);
         } else if (test) {
             StateManager::get().enter<IngameState>(this, true, "test");

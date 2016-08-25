@@ -25,6 +25,8 @@ set(RWGAME_SOURCES
 	GameInput.hpp
 	GameInput.cpp
 
+	states/MovieState.hpp
+	states/MovieState.cpp
 	states/LoadingState.hpp
 	states/LoadingState.cpp
 	states/IngameState.hpp
@@ -59,6 +61,7 @@ target_link_libraries(rwgame
 	${OPENGL_LIBRARIES}
 	${BULLET_LIBRARIES}
 	${SDL2_LIBRARY}
+	${FFMPEG_LIBRARIES}
 	)
 if(MINGW)
 	target_link_libraries(rwgame
