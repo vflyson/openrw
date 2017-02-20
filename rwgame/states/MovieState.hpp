@@ -1,15 +1,13 @@
 #pragma once
 
-// #include <platform/FileIndex.hpp>
 #include <render/GameRenderer.hpp>
 #include <render/OpenGLRenderer.hpp>
-#include <data/Model.hpp>
 #include "State.hpp"
 
 extern "C" {
-	#include <libavformat/avformat.h>
-	#include <libavcodec/avcodec.h>
-	#include <libswscale/swscale.h>
+    #include <libavformat/avformat.h>
+    #include <libavcodec/avcodec.h>
+    #include <libswscale/swscale.h>
 }
 
 class AVFormatContext;
@@ -19,33 +17,41 @@ class AVFrame;
 
 class MovieState : public State
 {
-	State* next;
-	const std::string name;
+    State* next;
+    const std::string name;
 public:
-	MovieState(RWGame* game, const std::string name);
+    MovieState(RWGame* game, const std::string name);
 
-	virtual void enter();
-	virtual void exit();
+    virtual void enter();
+    virtual void exit();
 
-	virtual void tick(float dt);
+    virtual void tick(float dt);
 
-	virtual void draw(GameRenderer* r);
+    virtual void draw(GameRenderer* r);
 
-	void setNextState(State* nextState);
-
-	virtual void handleEvent(const SDL_Event& event);
-protected:
-	int videoStreamIndex;
-	int audioStreamIndex;
-
-	AVFormatContext* pFormatContext;
-	AVCodecContext* pVideoCodecContext;
-	AVCodecContext* pAudioCodecContext;
-	AVCodec* pVideoCodec;
-	AVCodec* pAudioCodec;
-	AVFrame* pVideoFrame;
-	AVFrame* pVideoFrameRGB;
-
-	GLuint textureId;
-	uint8_t *videoBuffer;
+    virtual void handleEvent(const SDL_Event& event);
+private:
+    AVFrame* picture;
+    AVFrame* pVideoFrameRGB;
+    AVPacket packet;
+    struct SwsContext* scaleContext = nullptr;
+    bool busy = true;
+    int videoStream;
+    int numBytes;
+    const AVPixelFormat fmt = AV_PIX_FMT_RGB24;
+    void av_init();
+    void next_frame();
+    int videoFrameFinished = 0;
+    int videoFrameNumber = 0;
+    int videoStreamIndex = -1;
+    int audioStreamIndex = -1;
+    AVFormatContext* pFormatContext = nullptr;
+    AVCodecParameters* pVideoCodecParameters = nullptr;
+    AVCodecParameters* pAudioCodecParameters = nullptr;
+    AVCodecContext* pVideoCodecContext = nullptr;
+    AVCodecContext* pAudioCodecContext = nullptr;
+    AVCodec* pVideoCodec = nullptr;
+    AVCodec* pAudioCodec = nullptr;
+    GLuint texture;
+    uint8_t* videoBuffer = nullptr;
 };

@@ -30,6 +30,7 @@ GameBase::GameBase(Logger &inlog, int argc, char *argv[]) : log(inlog) {
         "fullscreen,f", "Enable fullscreen mode")("newgame,n",
                                                   "Directly start a new game")(
         "test,t", "Starts a new game in a test location")(
+        "movies,m", "Play movies")(
         "load,l", po::value<std::string>(), "Load save file")(
         "benchmark,b", po::value<std::string>(), "Run benchmark from file");
 

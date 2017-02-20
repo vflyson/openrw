@@ -79,11 +79,13 @@ RWGame::RWGame(Logger& log, int argc, char* argv[])
         data.loadTXD(name + ".txd");
     }
 
+    if (movies) {
+        StateManager::get().enter<MovieState>(this, config.getGameDataPath() + "/movies/Logo.mpg");
+        //StateManager::get().enter<MovieState>(this, config.getGameDataPath() + "/movies/GTAtitles.mpg");
+    }
+
     StateManager::get().enter<LoadingState>(this, [=]() {
-        if (movies) {
-            StateManager::get().enter<MovieState>(this, "Logo");
-            StateManager::get().enter<MovieState>(this, "GTAtitles");
-        } else if (!benchFile.empty()) {
+        if (!benchFile.empty()) {
             StateManager::get().enter<BenchmarkState>(this, benchFile);
         } else if (test) {
             StateManager::get().enter<IngameState>(this, true, "test");
